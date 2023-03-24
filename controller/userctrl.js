@@ -15,4 +15,20 @@ const createuser =  asynchandler(async (req, res) => {
     }
 })
 
-module.exports = {createuser} 
+const loginuserctrl = asynchandler(async (req, res) => {
+    const {email, password} = req.body
+    // check the user exists or not
+    
+    const finduser = await User.findOne({email});
+
+    if(finduser && await finduser.isPaasswordMatched(password)) {
+        res.json(finduser);
+        console.log("Login Sucessfull");
+    } else {
+        throw new Error(`user not found`)
+    }
+
+
+}) 
+
+module.exports = {createuser, loginuserctrl} 

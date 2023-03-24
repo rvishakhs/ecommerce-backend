@@ -34,7 +34,9 @@ userSchema.pre("save", async function(next) {
     this.password = await bcrypt.hash(this.password, salt) //refer the bcrypt readme for more details
 })
 
-
+userSchema.methods.isPaasswordMatched = async function(enterdpass) {
+    return await bcrypt.compare(enterdpass, this.password)
+}
 
 
 
