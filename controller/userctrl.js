@@ -45,8 +45,61 @@ const loginuserctrl = asynchandler(async (req, res) => {
 //  Get all users 
 
 const getallusers = asynchandler(async (req, res) => {
-    const allUsers = await User.find() 
-    res.json(allUsers)
+    try {
+        const allUsers = await User.find() 
+        res.json(allUsers)
+    } catch (err) {
+        throw new Error(err)
+    }
 } )
 
-module.exports = {createuser, loginuserctrl, getallusers} 
+// Find one user by Id
+
+const getOneUser = asynchandler(async (req, res) => {
+    const {id} = req.params
+    try {
+        const user = await User.findById(id)
+        res.json(user)
+    } catch (err) {
+        throw new Error(err)
+    }
+})
+
+// Find and delete a user 
+
+const deleteUser = asynchandler(async (req, res) => {
+    const {id } = req.params
+    try {
+        const deletedUser = await User.findByIdAndDelete(id)
+        res.json(deletedUser)
+    } catch (err) {
+        throw new Error(err)
+    }
+}) 
+
+// Find and update a user by id 
+
+const updateUser = asynchandler(async (req, res) => {
+    const {id} = req.params 
+    try {
+        const UserUpdated = await User.findByIdAndUpdate(id, {
+            firstname : req?.body.firstname,
+            lastname : req?.body.lastname,
+            email : req?.body.email,
+            mobile : req?.body.mobile
+        },{new : true})
+        res.json(UserUpdated)
+
+    } catch (err) {
+        throw new Error(err)
+    }
+})
+
+module.exports = {
+    createuser, 
+    loginuserctrl, 
+    getallusers, 
+    getOneUser, 
+    deleteUser,
+    updateUser
+} 
