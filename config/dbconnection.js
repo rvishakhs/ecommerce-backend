@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 
 const dbconnection = () => {
     try{
-        mongoose.connect('mongodb://127.0.0.1:27017/ecommerce')
+        mongoose.connect(process.env.MONGODB_URL)
         console.log("Database connection started");
     }
     catch(err){
