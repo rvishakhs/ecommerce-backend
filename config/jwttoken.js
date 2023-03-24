@@ -5,4 +5,4 @@ const generateToken = async (id) => {
     
 }
 
-module.exports = {generateToken}
+module.exports = generateToken

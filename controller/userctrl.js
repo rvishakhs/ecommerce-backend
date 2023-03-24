@@ -2,6 +2,8 @@ const User = require("../modals/userModal")
 const asynchandler = require("express-async-handler");
 const generateToken = require("../config/jwttoken");
 
+// Creating a new user 
+
 const createuser =  asynchandler(async (req, res) => {
     const email = req.body.email
     const finduser = await User.findOne({email: email});
@@ -15,6 +17,8 @@ const createuser =  asynchandler(async (req, res) => {
        throw new Error(`user already exists`)
     }
 })
+
+// Login user function
 
 const loginuserctrl = asynchandler(async (req, res) => {
     const {email, password} = req.body
@@ -36,8 +40,13 @@ const loginuserctrl = asynchandler(async (req, res) => {
     } else {
         throw new Error(`user not found`)
     }
-
-
 }) 
 
-module.exports = {createuser, loginuserctrl} 
+//  Get all users 
+
+const getallusers = asynchandler(async (req, res) => {
+    const allUsers = await User.find() 
+    res.json(allUsers)
+} )
+
+module.exports = {createuser, loginuserctrl, getallusers} 
