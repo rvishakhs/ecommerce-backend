@@ -1,5 +1,6 @@
 const User = require("../modals/userModal")
-const asynchandler = require("express-async-handler")
+const asynchandler = require("express-async-handler");
+const generateToken = require("../config/jwttoken");
 
 const createuser =  asynchandler(async (req, res) => {
     const email = req.body.email
@@ -22,7 +23,15 @@ const loginuserctrl = asynchandler(async (req, res) => {
     const finduser = await User.findOne({email});
 
     if(finduser && await finduser.isPaasswordMatched(password)) {
-        res.json(finduser);
+        res.json({
+            _id : finduser?._id,
+            firstname : finduser?.firstname,
+            lastname : finduser?.lastname,
+            email: finduser?.email,
+            mobile : finduser?.mobile,
+            token : generateToken(finduser?._id)
+
+        });
         console.log("Login Sucessfull");
     } else {
         throw new Error(`user not found`)
