@@ -2,6 +2,8 @@ const jwt = require("jsonwebtoken")
 const User = require("../modals/userModal")
 const asyncHandler = require("express-async-handler")
 
+// Verifying jwt token to give access
+
 const authHandler = asyncHandler(async(req, res, next) => {
     let token;
     if(req?.headers?.authorization?.startsWith("Bearer")) {
@@ -24,4 +26,18 @@ const authHandler = asyncHandler(async(req, res, next) => {
     }
 })
 
-module.exports = authHandler
+// Checking is the person login is admin or not?
+
+const isAdmin = asyncHandler(async(req, res, next) => {
+    const {email} = req.user
+    const user = await User.findOne({ email: email})
+    if(user.role === 'admin') {
+        next()
+    } else {
+        res.status(401)
+        throw new Error("You are not admin")
+    }
+})
+
+
+module.exports = {authHandler, isAdmin}

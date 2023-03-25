@@ -56,9 +56,9 @@ const getallusers = asynchandler(async (req, res) => {
 // Find one user by Id
 
 const getOneUser = asynchandler(async (req, res) => {
-    const {id} = req.params
+    const {_id} = req.user
     try {
-        const user = await User.findById(id)
+        const user = await User.findById(_id)
         res.json(user)
     } catch (err) {
         throw new Error(err)
@@ -68,9 +68,9 @@ const getOneUser = asynchandler(async (req, res) => {
 // Find and delete a user 
 
 const deleteUser = asynchandler(async (req, res) => {
-    const {id } = req.params
+    const {_id } = req.user
     try {
-        const deletedUser = await User.findByIdAndDelete(id)
+        const deletedUser = await User.findByIdAndDelete(_id)
         res.json(deletedUser)
     } catch (err) {
         throw new Error(err)
@@ -80,9 +80,9 @@ const deleteUser = asynchandler(async (req, res) => {
 // Find and update a user by id 
 
 const updateUser = asynchandler(async (req, res) => {
-    const {id} = req.params 
+    const {_id} = req.user 
     try {
-        const UserUpdated = await User.findByIdAndUpdate(id, {
+        const UserUpdated = await User.findByIdAndUpdate(_id, {
             firstname : req?.body.firstname,
             lastname : req?.body.lastname,
             email : req?.body.email,
