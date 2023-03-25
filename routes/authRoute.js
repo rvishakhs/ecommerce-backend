@@ -1,6 +1,6 @@
 
 const express = require('express')
-const { createuser, loginuserctrl, getallusers, getOneUser, deleteUser, updateUser } = require('../controller/userctrl')
+const { createuser, loginuserctrl, getallusers, getOneUser, deleteUser, updateUser, blockUser, unBlockUser } = require('../controller/userctrl')
 const {authHandler, isAdmin} = require('../middleware/AuthVerification')
 
 
@@ -13,6 +13,8 @@ router.get("/users", getallusers)
 router.get("/:id", authHandler ,isAdmin, getOneUser)
 router.delete("/:id", deleteUser)
 router.put("/userupdate",authHandler, updateUser)
+router.put("/blockuser/:id",authHandler,isAdmin, blockUser)
+router.put("/unblockuser/:id",authHandler,isAdmin, unBlockUser)
 
 
 

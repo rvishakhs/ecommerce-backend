@@ -95,11 +95,44 @@ const updateUser = asynchandler(async (req, res) => {
     }
 })
 
+// Block a user 
+
+const blockUser = asynchandler(async (req, res) => {
+    const {id} = req.params
+    try {
+        const BlockedUser = await User.findByIdAndUpdate(id, {
+            blocked : true
+        }, {new : true})
+        res.json({
+            message : "User blocked"
+        })
+    } catch (err) {
+        throw new Error("something wrong with blocked user")
+    }
+})
+
+// Unblock User 
+const unBlockUser = asynchandler(async (req, res) => {
+    const {id} = req.params
+    try {
+        const UnBlockedUser = await User.findByIdAndUpdate(id, {
+            blocked : false
+        }, {new : true})
+        res.json({
+            message : "User Unblocked"
+        })
+    } catch (err) {
+        throw new Error("something wrong with unblocked user")
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
     getallusers, 
     getOneUser, 
     deleteUser,
-    updateUser
+    updateUser,
+    blockUser,
+    unBlockUser
 } 

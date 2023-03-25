@@ -29,6 +29,10 @@ var userSchema = new mongoose.Schema({
         type: String,
         default: "user" 
     },
+    blocked: {
+        type: Boolean,
+        default: false
+    },
     cart : {
         type: Array,
         default: [],        
