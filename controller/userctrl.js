@@ -31,14 +31,14 @@ const loginuserctrl = asynchandler(async (req, res) => {
 
     if(finduser && await finduser.isPaasswordMatched(password)) {
         const refreshToken = await generateRefreshToken(finduser?._id);
-        const updateUser = await User.findByIdAndUpdate(finduser?._id, {
+        const updateUser = await User.findByIdAndUpdate(finduser._id, {
                 refreshToken : refreshToken,
             },
             {
                 new: true
             }
         )
-        res.cookie("RefreshToken", refreshToken, {
+        res.cookie("refreshToken", refreshToken, {
             httpOnly: true,
             maxAge: 72 * 60 * 60 * 1000
         })
