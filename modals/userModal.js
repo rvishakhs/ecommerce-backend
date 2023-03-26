@@ -33,6 +33,9 @@ var userSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
+    refreshToken : {
+        type: String,
+    },
     cart : {
         type: Array,
         default: [],        

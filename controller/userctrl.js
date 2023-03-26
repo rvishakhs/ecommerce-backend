@@ -2,6 +2,8 @@ const User = require("../modals/userModal")
 const asynchandler = require("express-async-handler");
 const generateToken = require("../config/jwttoken");
 const MongoDbValidation = require("../utils/validatemogodbid");
+var cookieParser = require('cookie-parser');
+const generateRefreshToken = require("../config/refreshToken");
 
 // Creating a new user 
 
@@ -28,6 +30,18 @@ const loginuserctrl = asynchandler(async (req, res) => {
     const finduser = await User.findOne({email});
 
     if(finduser && await finduser.isPaasswordMatched(password)) {
+        const refreshToken = await generateRefreshToken(finduser?._id);
+        const updateUser = await User.findByIdAndUpdate(finduser?._id, {
+                refreshToken : refreshToken,
+            },
+            {
+                new: true
+            }
+        )
+        res.cookie("RefreshToken", refreshToken, {
+            httpOnly: true,
+            maxAge: 72 * 60 * 60 * 1000
+        })
         res.json({
             _id : finduser?._id,
             firstname : finduser?.firstname,
@@ -53,6 +67,13 @@ const getallusers = asynchandler(async (req, res) => {
         throw new Error(err)
     }
 } )
+
+// Handlerefresh Token
+
+const handleRefreshToken = asynchandler(async (req, res)=> {
+    const cookie = req.cookies
+    console.log(cookie);
+})
 
 // Find one user by Id
 
@@ -140,5 +161,6 @@ module.exports = {
     deleteUser,
     updateUser,
     blockUser,
-    unBlockUser
+    unBlockUser,
+    handleRefreshToken
 } 
