@@ -113,7 +113,7 @@ const logoutFunction = asynchandler(async (req, res) => {
             })
             res.statusCode(204)
         } 
-        await User.findOneAndUpdate(refreshToken, {
+        await User.findByIdAndUpdate(user.id, {
             refreshToken : " "
         })
         res.clearCookie("refreshToken",{
