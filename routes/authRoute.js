@@ -11,11 +11,11 @@ router.post("/register", createuser)
 router.post("/login", loginuserctrl)
 router.get("/users", getallusers)
 router.get("/:id", authHandler ,isAdmin, getOneUser)
+router.get("/refresh", handleRefreshToken)
 router.delete("/:id", deleteUser)
 router.put("/userupdate",authHandler, updateUser)
 router.put("/blockuser/:id",authHandler,isAdmin, blockUser)
 router.put("/unblockuser/:id",authHandler,isAdmin, unBlockUser)
-router.get("/refreshuser", handleRefreshToken)
 
 
 
