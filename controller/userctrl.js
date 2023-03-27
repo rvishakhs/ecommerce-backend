@@ -74,22 +74,21 @@ const getallusers = asynchandler(async (req, res) => {
 
 const handleRefreshToken = asynchandler(async (req, res)=> {
     const cookie = await req.cookies
-    console.log(cookie);
-    
+    console.log(cookie);  
     try {
-        const cookie = await req.cookies
         if(!cookie.refreshToken) throw new Error ("No refresh Token found" )
         const refreshToken = cookie.refreshToken
         const user = await User.findOne({ refreshToken : refreshToken})    
         if (!user) throw new Error(`There is no refresh token and user found in DB`)
-        jwt.verify(refreshToken, process.env.SECRET_KEY, (err, decoded) => {
+        jwt.verify(refreshToken, process.env.SECRET_KEY, async (err, decoded) => {
             if (err || user.id !== decoded.id) {
                 throw new Error(`There is something wrong with refresh token`)
             } else {
-                const accessToken = generateToken(user?.id);
+                const accessToken = await generateToken(user?.id);
                 res.json({
                     accessToken
                 })
+                console.log(accessToken);
             }
         })
         
