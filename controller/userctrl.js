@@ -1,16 +1,16 @@
 const User = require("../modals/userModal")
 const asynchandler = require("express-async-handler");
-const generateToken = require("../config/jwttoken");
+const {generateToken} = require("../config/jwttoken");
 const MongoDbValidation = require("../utils/validatemogodbid");
 var cookieParser = require('cookie-parser');
-const generateRefreshToken = require("../config/refreshToken");
+const {generateRefreshToken} = require("../config/refreshToken");
 
 // Creating a new user 
 
 const createuser =  asynchandler(async (req, res) => {
     const email = req.body.email
     const finduser = await User.findOne({email: email});
-
+ 
     if(!finduser) {
         // Create a new user
         const newUser = User.create(req.body);
@@ -37,11 +37,12 @@ const loginuserctrl = asynchandler(async (req, res) => {
             {
                 new: true
             }
-        )
-        res.cookie("refreshToken", refreshToken, {
-            httpOnly: true,
-            maxAge: 72 * 60 * 60 * 1000
+        );
+        res.cookie("refreshToken", refreshToken,{
+            httpOnly : true,
+            maxAge : 72 * 60 * 60 * 1000,
         })
+
         res.json({
             _id : finduser?._id,
             firstname : finduser?.firstname,
@@ -71,8 +72,15 @@ const getallusers = asynchandler(async (req, res) => {
 // Handlerefresh Token
 
 const handleRefreshToken = asynchandler(async (req, res)=> {
-    const cookie = req.cookies
-    console.log(cookie);
+    try {
+        const cookie = await req.cookies
+        if(!cookie.refreshToken) throw new Error ("No refresh Token found" )
+        const refreshToken = cookie.refreshToken
+        console.log(refreshToken);
+    } catch (err) {
+        throw new Error(`This error is related to Handle refesh Token ${err}`)
+    }
+    
 })
 
 // Find one user by Id

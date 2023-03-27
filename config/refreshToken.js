@@ -5,4 +5,4 @@ const generateRefreshToken = async (id) => {
      return token
 }
 
-module.exports = generateRefreshToken
+module.exports = {generateRefreshToken}
