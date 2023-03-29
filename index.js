@@ -8,6 +8,7 @@ const PORT = process.env.PORT || 4000 // assiging port
 const cookieParser = require('cookie-parser')
 
 const authRoute = require("./routes/authRoute")
+const productRoute = require("./routes/productRoute")
 
 dbconnection()
 
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use(cookieParser())
 app.use("/api/user", authRoute) 
+app.use("/api/product", productRoute) 
 
 // For error handling
 

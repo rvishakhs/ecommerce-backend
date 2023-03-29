@@ -28,7 +28,7 @@ var productSchema = new mongoose.Schema({
         required:true,
     },
     brand : {
-        type: string,
+        type: String,
         enum: ["Apple", "Samsung", "Sony"]
     },
     quantity : {
