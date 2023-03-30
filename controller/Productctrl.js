@@ -31,7 +31,20 @@ const getproduct = asynchandler(async (req, res) => {
 
 const getAllProducts = asynchandler(async (req, res) => {
     try {
-        const allproducts = await Product.find()
+        const queryobj =  {...req.query}
+        const excludedfields = ["page", "sort", "limit", "fields"]
+        excludedfields.forEach((item) => delete queryobj[item])
+
+        console.log(queryobj);
+
+        let querystring = JSON.stringify(queryobj)
+        console.log(querystring);
+
+        querystring = querystring.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
+
+        const query =  Product.find(JSON.parse(querystring))
+
+        const allproducts = await query
         res.json(allproducts)
     } catch (err){
         throw new Error(`This error is related to Finding all products, and  details are ${err.Message}`)
