@@ -56,5 +56,17 @@ const updateProduct = asynchandler(async (req, res) => {
     }
 })
 
+// Delate Product
 
-module.exports = {createProduct, getproduct, getAllProducts, updateProduct}
+const deleteProduct = asynchandler(async (req, res) => {
+    const {id} = req.params
+    try{
+        const deletedProduct = await Product.findByIdAndDelete(id)
+        res.json(deletedProduct)
+    } catch (err) {
+        throw new Error(`This error is related to Deleting product, and  details are ${err.Message}`)
+    }
+})
+
+
+module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct}
