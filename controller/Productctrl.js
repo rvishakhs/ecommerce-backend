@@ -1,5 +1,6 @@
 const Product = require("../modals/productModal")
 const asynchandler = require("express-async-handler")
+const slugify = require('slugify')
 
 // Create a new product
 
@@ -37,5 +38,23 @@ const getAllProducts = asynchandler(async (req, res) => {
     }
 })
 
+// Update Product
 
-module.exports = {createProduct, getproduct, getAllProducts}
+const updateProduct = asynchandler(async (req, res) => {
+    const {id } = req.params
+    try {
+        if(req.body.tittle) {
+            req.body.slug = await slugify(req.body.tittle)
+        }
+        const updatedProduct = await Product.findByIdAndUpdate(id, req.body, {
+            new: true
+        })
+        res.json(updatedProduct)
+
+    } catch (err) {
+        throw new Error(`This error is related to Updating products, and  details are ${err.Message}`)
+    }
+})
+
+
+module.exports = {createProduct, getproduct, getAllProducts, updateProduct}
