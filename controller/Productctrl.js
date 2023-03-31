@@ -53,6 +53,15 @@ const getAllProducts = asynchandler(async (req, res) => {
             query = query.sort("createdAt")
         }
 
+        // Limiting the fields
+
+        if(req.query.fields){
+             const Fields = req.query.fields.split(",").join(" ")
+             query = query.select(Fields)   
+        } else {
+            query = query.select("-__v")
+        }
+
         const allproducts = await query
         res.json(allproducts)
     } catch (err){
