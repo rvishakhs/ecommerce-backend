@@ -1,6 +1,7 @@
 const Blog = require("../modals/blogModal")
 const User = require("../modals/userModal")
 const asynchandler = require("express-async-handler")
+const MongoDbValidation = require("../utils/validatemogodbid")
 
 
 
@@ -74,4 +75,37 @@ const deleteBlog = asynchandler(async(req, res) => {
     }
 })
 
-module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog}
+// Likefunctionality 
+
+const likeBlog = asynchandler(async(req, res)=> {
+    const {blogid} = req.body
+    try {
+        MongoDbValidation(blogid)
+        // Find the blog you want to be liked
+        const blog = await Blog.findById(blogid)
+        // Find the user who liked the blog
+        const user = await User.findById(req?.user?._id)
+        // Find the user already liked the blog
+        const isliked = blog?.isLiked
+        // FInd the user already disliked
+        const disliked = blog?.disLikes.find(
+            (userId => userId?.toString() === user.toString())
+        )
+        if(disliked){
+            const Blog = Blog.findByIdAndUpdate(blogid, {$pull:{disLikes : user}, isDisLiked : false}, {new : true}) 
+            res.json(Blog)
+        } 
+        if(isliked ) {
+            const Blog = Blog.findByIdAndUpdate(blogid, {$pull: {likes : user}, isliked : false}, {new : true})
+            res.json(Blog)
+        } else {
+            const Blog = Blog.findByIdAndUpdate(blogid, {$push: {likes : user}, isliked : true}, {new : true})
+            res.json(Blog)
+        } 
+
+    } catch (err) {
+
+    }
+})
+
+module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog, likeBlog}
