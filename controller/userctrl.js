@@ -4,7 +4,9 @@ const {generateToken} = require("../config/jwttoken");
 const MongoDbValidation = require("../utils/validatemogodbid");
 const cookieParser = require('cookie-parser');
 const {generateRefreshToken} = require("../config/refreshToken");
-const jwt = require ("jsonwebtoken")
+const jwt = require ("jsonwebtoken");
+const sentemail = require("./emailcontroler");
+const crypto = require("crypto");
 
 // Creating a new user 
 
@@ -100,7 +102,7 @@ const handleRefreshToken = asynchandler(async (req, res)=> {
 
 // Change Password Functionality 
 
-const changePasswrod = asynchandler(async (req, res) => {
+const changePassword = asynchandler(async (req, res) => {
     const {_id} = req.user
     const {password} = req.body
 
@@ -115,6 +117,55 @@ const changePasswrod = asynchandler(async (req, res) => {
      } else {
         res.json(user)
      }
+})
+
+// Forget Password Functionality
+
+const forgetpassword = asynchandler(async(req, res) => {
+    const {email} = req.body
+    const user = await User.findOne({email})
+    if(!user) throw new Error(`user not found`)
+    try {
+        const token = await user.createPasswordResetToken();
+        await user.save();
+
+        const resetUrl = `We received a request to reset your Eshoppers account password. This Link is valid for 10 minutes till ${Date()} <a href="http://localhost:4005/api/user/resetpassword/${token}">Forget Password</a>`
+        const data = {
+            to : email,
+            subject : "Password Reset Request",
+            text : "Hey User",
+            html : resetUrl
+        } 
+        sentemail(data)
+        res.json(token)
+    } catch (err) {
+        throw new Error(`This error is related to Handle refesh Token ${err}`)
+    }
+})
+
+// Reset Password Functionality
+
+const resetpassword = asynchandler(async(req,res) => {
+    const {password } = req.body
+    const {token} = req.params
+
+    const hashedtoken = crypto.createHash("sha256").update(token).digest("hex")
+
+    const user = await User.findOne({
+        passwordresettoken : hashedtoken,
+        passwordresetexpires : { $gt : Date.now() }
+    });
+
+    if(!user) throw new Error(`user not found`)
+
+    user.password = password;
+    user.passwordresettoken = undefined;
+    user.passwordresetexpires = undefined;
+
+    await user.save();
+
+    res.json(user)
+
 })
 
 // Logout Function 
@@ -235,5 +286,7 @@ module.exports = {
     unBlockUser,
     handleRefreshToken,
     logoutFunction,
-    changePasswrod
+    changePassword,
+    forgetpassword,
+    resetpassword,
 } 
