@@ -10,6 +10,8 @@ const morgan = require('morgan')
 
 const authRoute = require("./routes/authRoute")
 const productRoute = require("./routes/productRoute")
+const blogRouter = require("./routes/blogRoute")
+
 
 dbconnection()
 
@@ -21,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use("/api/user", authRoute) 
 app.use("/api/product", productRoute) 
+app.use("/api/blog", blogRouter) 
 
 // For error handling
 
