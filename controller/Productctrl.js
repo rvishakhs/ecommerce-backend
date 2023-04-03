@@ -71,8 +71,7 @@ const getAllProducts = asynchandler(async (req, res) => {
         query = query.skip(skip).limit(limit)
         if(req.query.page ) {
             const totalproducts = await Product.countDocuments();
-            console.log(totalproducts);
-            if(skip >= totalproducts) throw new Error("This page does not exists")
+            if(skip >= totalproducts) throw new Error(`This page does not exists for more details check ${Error}`)
         }
 
         console.log(page, limit, skip);

@@ -98,6 +98,25 @@ const handleRefreshToken = asynchandler(async (req, res)=> {
     }
 })
 
+// Change Password Functionality 
+
+const changePasswrod = asynchandler(async (req, res) => {
+    const {_id} = req.user
+    const {password} = req.body
+
+    MongoDbValidation(_id) 
+
+    const user = await User.findById(_id);
+
+     if(password) {
+        user.password = password;
+        const UpdatedPassword = await user.save()
+        res.json(UpdatedPassword)  
+     } else {
+        res.json(user)
+     }
+})
+
 // Logout Function 
 
 const logoutFunction = asynchandler(async (req, res) => {
@@ -215,5 +234,6 @@ module.exports = {
     blockUser,
     unBlockUser,
     handleRefreshToken,
-    logoutFunction
+    logoutFunction,
+    changePasswrod
 } 
