@@ -44,9 +44,34 @@ const viewSingleBlog = asynchandler(async (req, res) => {
         })
         res.json(updateViews)
     } catch (err) {
-        throw new Error(`This error is related to updating blog post for more details : ${err.message}`)
+        throw new Error(`This error is related to Viewing single blog post for more details : ${err.message}`)
     }
     
 })
 
-module.exports = {createBlog, updateBlog, viewSingleBlog}
+// Get all blogs 
+
+const getAllBlogs = asynchandler(async (req, res) => {
+    try {
+        const allBlogs = await Blog.find()
+        res.json(allBlogs)
+    } catch (err){
+        throw new Error(`This error is related to viewing all blog posts, for more details : ${err.message}`)
+    }
+
+})
+
+// Delete a single blogpost 
+
+const deleteBlog = asynchandler(async(req, res) => {
+    const {id} = req.params;
+    try {
+        const deletedblog = await Blog.findByIdAndDelete(id)
+        res.json(deletedblog)
+
+    } catch (err) {
+        throw new Error(`This error is related to deleting single post, for more details : ${err.message}`)
+    }
+})
+
+module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog}
