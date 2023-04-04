@@ -84,7 +84,6 @@ const likeBlog = asynchandler(async(req, res)=> {
         const blog = await Blog.findById(blogid)
         // Find the user who liked the blog
         const user = req?.user?._id
-        console.log(user);
         // Find the user already liked the blog
         const isliked = blog?.isLiked
         // Finding user already disliked the post
@@ -105,8 +104,42 @@ const likeBlog = asynchandler(async(req, res)=> {
         } 
 
     } catch (err) {
-        throw new Error(`This error is related to likes and dislikes, for more details : ${err.message}`)
+        throw new Error(`This error is related to likes , for more details : ${err.message}`)
     }
 })
 
-module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog, likeBlog}
+// Dislike Functionality 
+
+const disLikeBlog = asynchandler(async(req,res)=> {
+    // Take the blog id from body
+     const {blogid} = req.body
+    try {
+    // Find out the blog using blog id
+    const blog = await Blog.findById(blogid)
+    // Find the user and store user id
+    const user = req?.user?._id
+    // Check user already disliked the vlog 
+    const isDisLiked = await blog?.isDisLiked
+    // Find user liked the blog 
+    const liked = blog?.ikes?.find(
+        (userId) => userId?.toString() === user.toString()
+    );
+    if(liked){
+        const blog = await Blog.findByIdAndUpdate(blogid, {$pull:{likes : user}, isLiked : false}, {new : true}) 
+        res.json(blog)
+    }
+    if(isDisLiked ) {
+        const blog = await Blog.findByIdAndUpdate(blogid,  {$pull : {disLikes: user }, isDisLiked : false}, {new : true})
+        res.json(blog)
+    } 
+    else {
+        const blog = await Blog.findByIdAndUpdate(blogid, {$push : {disLikes: user }, isDisLiked : true}, {new : true})
+        res.json(blog)
+    }
+
+    } catch (err) {
+        throw new Error(`This error is related to dislikes, for more details : ${err.message}`)
+    }
+})
+
+module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog, likeBlog, disLikeBlog}
