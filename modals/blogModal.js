@@ -26,17 +26,19 @@ var BlogSchema = new mongoose.Schema({
     isDisLiked: {
         type: Boolean,
         default: false
-    },
-    likes: {
-        type: Array 
-    },
-    
+    },    
+    likes : [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
+        }
+    ],
     disLikes : [
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         }
-],
+    ],
     images : {
         type : String,
         default : 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png'

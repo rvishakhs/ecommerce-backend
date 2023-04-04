@@ -83,7 +83,8 @@ const likeBlog = asynchandler(async(req, res)=> {
         // Find the blog you want to be liked
         const blog = await Blog.findById(blogid)
         // Find the user who liked the blog
-        const user = await User.findById(req?.user?._id)
+        const user = req?.user?._id
+        console.log(user);
         // Find the user already liked the blog
         const isliked = blog?.isLiked
         // Finding user already disliked the post
