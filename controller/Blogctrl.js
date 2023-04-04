@@ -37,13 +37,13 @@ const updateBlog = asynchandler(async (req, res) => {
 const viewSingleBlog = asynchandler(async (req, res) => {
     const {id} = req.params;
     try{
-        const ViewBlog = await Blog.findById(id)
+        const ViewBlog = await Blog.findById(id).populate("likes").populate("disLikes")
         const updateViews = await Blog.findByIdAndUpdate(id, {
             $inc : {numOfViews : 1},
         }, {
             new : true,
         })
-        res.json(updateViews)
+        res.json(ViewBlog)
     } catch (err) {
         throw new Error(`This error is related to Viewing single blog post for more details : ${err.message}`)
     }

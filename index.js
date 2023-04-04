@@ -8,9 +8,11 @@ const PORT = process.env.PORT || 4000 // assiging port
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
 
+// Different Routes
 const authRoute = require("./routes/authRoute")
 const productRoute = require("./routes/productRoute")
 const blogRouter = require("./routes/blogRoute")
+const ProductCategoryRouter = require("./routes/productcategoryRoute")
 
 
 dbconnection()
@@ -24,6 +26,7 @@ app.use(cookieParser())
 app.use("/api/user", authRoute) 
 app.use("/api/product", productRoute) 
 app.use("/api/blog", blogRouter) 
+app.use("/api/category", ProductCategoryRouter) 
 
 // For error handling
 
