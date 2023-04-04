@@ -80,31 +80,31 @@ const deleteBlog = asynchandler(async(req, res) => {
 const likeBlog = asynchandler(async(req, res)=> {
     const {blogid} = req.body
     try {
-        MongoDbValidation(blogid)
         // Find the blog you want to be liked
         const blog = await Blog.findById(blogid)
         // Find the user who liked the blog
         const user = await User.findById(req?.user?._id)
         // Find the user already liked the blog
         const isliked = blog?.isLiked
-        // FInd the user already disliked
-        const disliked = blog?.disLikes.find(
-            (userId => userId?.toString() === user.toString())
-        )
+        // Finding user already disliked the post
+        const disliked = blog?.disLikes?.find(
+            (userId) => userId?.toString() === user.toString()
+        );
         if(disliked){
-            const Blog = Blog.findByIdAndUpdate(blogid, {$pull:{disLikes : user}, isDisLiked : false}, {new : true}) 
-            res.json(Blog)
+            const blog = await Blog.findByIdAndUpdate(blogid, {$pull:{disLikes : user}, isDisLiked : false}, {new : true}) 
+            res.json(blog)
         } 
         if(isliked ) {
-            const Blog = Blog.findByIdAndUpdate(blogid, {$pull: {likes : user}, isliked : false}, {new : true})
-            res.json(Blog)
-        } else {
-            const Blog = Blog.findByIdAndUpdate(blogid, {$push: {likes : user}, isliked : true}, {new : true})
-            res.json(Blog)
+            const blog = await Blog.findByIdAndUpdate(blogid,  {$pull : {likes: user }, isLiked : false}, {new : true})
+            res.json(blog)
+        } 
+        else {
+            const blog = await Blog.findByIdAndUpdate(blogid, {$push : {likes: user }, isLiked : true}, {new : true})
+            res.json(blog)
         } 
 
     } catch (err) {
-
+        throw new Error(`This error is related to likes and dislikes, for more details : ${err.message}`)
     }
 })
 
