@@ -11,8 +11,9 @@ const morgan = require('morgan')
 // Different Routes
 const authRoute = require("./routes/authRoute")
 const productRoute = require("./routes/productRoute")
-const blogRouter = require("./routes/blogRoute")
 const ProductCategoryRouter = require("./routes/productcategoryRoute")
+const blogRouter = require("./routes/blogRoute")
+const blogCategory = require("./routes/blogcategoryRoute")
 
 
 dbconnection()
@@ -25,8 +26,9 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use("/api/user", authRoute) 
 app.use("/api/product", productRoute) 
-app.use("/api/blog", blogRouter) 
 app.use("/api/category", ProductCategoryRouter) 
+app.use("/api/blog", blogRouter) 
+app.use("/api/blogcategory", blogCategory) 
 
 // For error handling
 
