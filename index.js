@@ -14,6 +14,7 @@ const productRoute = require("./routes/productRoute")
 const ProductCategoryRouter = require("./routes/productcategoryRoute")
 const blogRouter = require("./routes/blogRoute")
 const blogCategory = require("./routes/blogcategoryRoute")
+const brandRoute = require("./routes/brandRoute")
 
 
 dbconnection()
@@ -29,6 +30,7 @@ app.use("/api/product", productRoute)
 app.use("/api/category", ProductCategoryRouter) 
 app.use("/api/blog", blogRouter) 
 app.use("/api/blogcategory", blogCategory) 
+app.use("/api/brand", brandRoute) 
 
 // For error handling
 
