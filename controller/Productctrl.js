@@ -124,7 +124,7 @@ const wishlistFunc = asynchandler(async (req, res) => {
         // Finding User
         const user = await User.findById(_id)
         // Finding is the product already added to wishlist
-        const isalreadyadded = await user.wishlist.find((id)=> id.toString() === productid.toString());
+        let isalreadyadded = await user.wishlist.find((id)=> id.toString() === productid.toString());
         if(isalreadyadded){
             const product = await User.findByIdAndUpdate(_id, {$pull :{wishlist: productid}} , {new : true})
             res.json(product)
@@ -138,5 +138,35 @@ const wishlistFunc = asynchandler(async (req, res) => {
     }
 })
 
+// Product Rating functionality
 
-module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc}
+const ratingfunction = asynchandler(async (req, res) => {
+    // Getting basic things like user and product id 
+
+    const {_id} = req.user;
+    const {star, prodId} = req.body;
+
+    try{
+        // Find the User
+        const user = await User.findById(_id)
+        // Find the product
+        const product = await Product.findById(prodId)
+        // Check the user already rated or not 
+        let alreadyrated = await Product.rating.find((id) => id.PostedBy.toString() === _id.toString())
+        // Condition
+        if(alreadyrated) {
+            const updaterating = await Product.updateOne({rating : {$elemMatch : alreadyrated},},{$set :{"rating.$.star" : star}}, {new : true})
+            res.json(updaterating)
+        } else {
+            const rateproduct = await Product.findByIdAndUpdate(prodId, {$push : {rating : {star : star , PostedBy : _id}}}, {new : true})
+            res.json(rateproduct)
+        }
+
+    }
+    catch (err) {
+        throw new Error (`This error is related to rating functionality`)
+    }
+ })
+
+
+module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc, ratingfunction}
