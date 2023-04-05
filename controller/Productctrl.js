@@ -1,7 +1,7 @@
 const Product = require("../modals/productModal")
 const asynchandler = require("express-async-handler")
 const slugify = require('slugify')
-
+const User = require("../modals/userModal")
 // Create a new product
 
 const createProduct = asynchandler(async(req, res) => {
@@ -113,5 +113,30 @@ const deleteProduct = asynchandler(async (req, res) => {
     }
 })
 
+// Wishlist Functionality for products
 
-module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct}
+const wishlistFunc = asynchandler(async (req, res) => {
+
+    // Taking basing details such as userid and productid 
+    const {_id} = req.user
+    const {productid} =req.body 
+    try {
+        // Finding User
+        const user = await User.findById(_id)
+        // Finding is the product already added to wishlist
+        const isalreadyadded = await user.wishlist.find((id)=> id.toString() === productid.toString());
+        if(isalreadyadded){
+            const product = await User.findByIdAndUpdate(_id, {$pull :{wishlist: productid}} , {new : true})
+            res.json(product)
+        } else {
+            const product = await User.findByIdAndUpdate(_id, {$push :{wishlist: productid}} , {new : true})
+            res.json(product)
+        }
+
+    } catch (err) {
+        throw new Error (`This error is related to wishlist functionality`)
+    }
+})
+
+
+module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc}
