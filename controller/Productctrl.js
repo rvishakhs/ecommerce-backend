@@ -166,6 +166,23 @@ const ratingfunction = asynchandler(async (req, res) => {
             res.json(rateproduct)
         }
 
+        // Calculate totalratings 
+
+        const getallproductratings = await Product.findById(prodId)
+        let sumofallratings = getallproductratings.rating.length;
+        let ratingsum = getallproductratings.rating.map((item) => item.star).reduce((prev, current) => prev + current, 0)
+
+        let actualrating = Math.round(ratingsum /sumofallratings)
+
+        const totalratings = await Product.findByIdAndUpdate(prodId, {
+            totalrating : actualrating
+        })
+
+        res.json(totalratings)
+
+
+
+
     }
     catch (err) {
         throw new Error (`This error is related to rating functionality`)
