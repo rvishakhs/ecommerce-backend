@@ -8,6 +8,9 @@ var productCategorySchema = new mongoose.Schema({
         unique:true,
         index:true,
     },
+},
+{
+    timestamps : true,
 });
 
 //Export the model
