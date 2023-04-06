@@ -189,5 +189,17 @@ const ratingfunction = asynchandler(async (req, res) => {
     }
  })
 
+//  Image uploading Functionality 
 
-module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc, ratingfunction}
+const ImageUpload = asynchandler(async (req, res)=> {
+        const {id} = req.params
+    try {
+        console.log(req.files );
+
+    } catch (err) {
+        throw new Error (`This error is related to image upload functionality and more details ${err.message}`)
+    }
+})
+
+
+module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc, ratingfunction, ImageUpload}
