@@ -146,7 +146,7 @@ const ratingfunction = asynchandler(async (req, res) => {
 
     const {_id} = req.user;
 
-    const {star, prodId} = req.body;
+    const {star, prodId, comment} = req.body;
     try{
         // Find the User
         const user = await User.findById(_id)
@@ -158,11 +158,11 @@ const ratingfunction = asynchandler(async (req, res) => {
         // Condition
         if(alreadyrated) {
             const updaterating = await Product.updateOne(
-                {rating : {$elemMatch : alreadyrated},}, {$set : {"rating.$.star": star}}, {new : true}
+                {rating : {$elemMatch : alreadyrated},}, {$set : {"rating.$.star": star ,"rating.$.comment": comment }}, {new : true}
                 )
             res.json(updaterating)
         } else {
-            const rateproduct = await Product.findByIdAndUpdate(prodId, {$push : {rating : {star : star , PostedBy : _id}}}, {new : true})
+            const rateproduct = await Product.findByIdAndUpdate(prodId, {$push : {rating : {star : star , comment : comment,  PostedBy : _id}}}, {new : true})
             res.json(rateproduct)
         }
 
