@@ -1,4 +1,4 @@
-const mutler = require("multer")  // For handling the multimedia files 
+const multer = require("multer")  // For handling the multimedia files 
 const sharp = require("sharp")   // For image reprocessing like width and height
 const path = require("path")  // accessing path modules
 
@@ -27,10 +27,10 @@ const multerFilter = (req, file, cb) => {
 
 // File uploading functionality for uploading
 
-const uploadPhoto = mutler({
+const uploadPhoto = multer({
     storage: multerStorage,
     fileFilter : multerFilter,
-    limits : {fieldSize : 2000000}
+    limits : {fieldSize : 5000000}
 })
 
 // Image resizing functionality after upload for products
@@ -44,9 +44,10 @@ const productImgResize = async (req, file, cb) => {
             .toFormat("jpeg")
             .jpeg({quality : 90})
             .toFile(`public/images/products/${file.filename}`)
-        })
-    ),
-    next();
+        }
+        )
+        ),
+        next();
 }
 
 // Image resizing functionality after upload for blogs
