@@ -24,5 +24,44 @@ const updateCoupon = asynchandler(async (req, res) => {
     } 
 })
 
+// Delete existing coupon
 
-module.exports = {createCoupon, updateCoupon}
+const deleteCoupon =  asynchandler(async (req, res)=> {
+        const {id} = req.params
+    try {
+        const deletedcoupon = await Coupon.findByIdAndDelete(id)
+        res.json(deletedcoupon)
+
+    } catch (err) {
+        throw new Error(`This error is related to deleting existing coupon: ${err.message}`)
+    } 
+})
+
+// Get a single coupon
+
+const getCoupon = asynchandler(async (req, res)=> {
+    const {id} = req.params
+    try{
+        const coupon = await Coupon.findById(id)
+        res.json(coupon)
+
+    } catch (err) {
+        throw new Error(`This error is related to getting an existing coupon: ${err.message}`)
+    }
+
+})
+
+// Getting all coupons 
+
+const getAllCoupons = asynchandler(async (req, res)=> {
+    try{
+        const coupon = await Coupon.find()
+        res.json(coupon)
+
+    } catch (err) {
+        throw new Error(`This error is related to fetching all coupons: ${err.message}`)
+    }
+
+})
+
+module.exports = {createCoupon, updateCoupon, deleteCoupon, getCoupon, getAllCoupons}
