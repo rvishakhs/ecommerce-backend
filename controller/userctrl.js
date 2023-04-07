@@ -61,6 +61,44 @@ const loginuserctrl = asynchandler(async (req, res) => {
     }
 }) 
 
+// Admin Login Functionality
+
+const loginAdmin = asynchandler(async (req, res) => {
+    const {email, password} = req.body
+    // check the user exists or not
+    
+    const findAdmin = await User.findOne({email});
+    if (findAdmin.role !== "admin") throw new Error(`This User is not a admin`)
+
+    if(findAdmin && await findAdmin.isPaasswordMatched(password)) {
+        const refreshToken = await generateRefreshToken(findAdmin?._id);
+        const updateUser = await User.findByIdAndUpdate(findAdmin._id, {
+                refreshToken : refreshToken,
+            },
+            {
+                new: true
+            }
+        );
+        res.cookie("refreshToken", refreshToken,{
+            httpOnly : true,
+            maxAge : 72 * 60 * 60 * 1000,
+        })
+
+        res.json({
+            _id : findAdmin?._id,
+            firstname : findAdmin?.firstname,
+            lastname : findAdmin?.lastname,
+            email: findAdmin?.email,
+            mobile : findAdmin?.mobile,
+            token : generateToken(findAdmin?._id)
+
+        });
+        console.log("Admin Login  Sucessfull");
+    } else {
+        throw new Error(`Adnin not found`)
+    }
+}) 
+
 //  Get all users 
 
 const getallusers = asynchandler(async (req, res) => {
@@ -275,6 +313,18 @@ const unBlockUser = asynchandler(async (req, res) => {
     }
 })
 
+// Fetch wishlist from user 
+
+const wishlist = asynchandler(async (req, res) => {
+    const {_id} = req.user
+    try{
+        const user = await User.findById(_id).populate("wishlist")
+        res.json(user)
+    } catch (err) {
+        throw new Error("something wrong with fetching wishlist")
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
@@ -289,4 +339,6 @@ module.exports = {
     changePassword,
     forgetpassword,
     resetpassword,
+    loginAdmin,
+    wishlist
 } 
