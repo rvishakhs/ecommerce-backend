@@ -99,6 +99,19 @@ const loginAdmin = asynchandler(async (req, res) => {
     }
 }) 
 
+// Saving address to user 
+
+const saveAddress = asynchandler(async (req, res) => {
+    const {_id} = req.user;
+    const {address} = req.body
+    try {
+        const user = await User.findByIdAndUpdate(_id, {address : address }, {new : true})
+        res.json(user)
+    } catch (err) {
+        throw new Error (`This error occured while saving address `)
+    }
+})
+
 //  Get all users 
 
 const getallusers = asynchandler(async (req, res) => {
@@ -340,5 +353,6 @@ module.exports = {
     forgetpassword,
     resetpassword,
     loginAdmin,
-    wishlist
+    wishlist,
+    saveAddress
 } 
