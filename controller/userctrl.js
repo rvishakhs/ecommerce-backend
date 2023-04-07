@@ -1,4 +1,6 @@
 const User = require("../modals/userModal")
+const Cart = require("../modals/CartModal")
+const Product = require("../modals/productModal")
 const asynchandler = require("express-async-handler");
 const {generateToken} = require("../config/jwttoken");
 const MongoDbValidation = require("../utils/validatemogodbid");
@@ -338,6 +340,47 @@ const wishlist = asynchandler(async (req, res) => {
     }
 })
 
+// Cart functionality for User
+
+const userCart = asynchandler(async (req, res) => {
+    const {_id} = req.user
+    const {cart} = req.body
+    try {
+        let products = []
+        const user = await User.findById(_id);
+        //  Check if the user already have some products in the cart
+        const alreadyInCart = await Cart.findOne({orderBy : user._id})
+        // if(alreadyInCart) {
+        //     alreadyInCart.remove();
+        // } 
+        for (let i = 0; i<cart.length; i++) {
+            let object = {}
+            object.product = cart[i]._id;
+            object.count = cart[i].count;
+            object.color = cart[i].color;Cart
+            let getPrize = await Product.findById(cart[i]._id).select("price").exec();
+            object.price = getPrize.price
+            products.push(object)
+        }
+
+        let carttotal = 0
+        for(i =0 ; i<products.length; i++){
+            carttotal = carttotal + products[i].price * products[i].count
+        }
+        let newCart = await new  Cart({
+            orderBy : user?._id,
+            cartTotal : carttotal,
+            products : products
+        }).save()
+        console.log(newCart);
+        res.json(newCart)
+
+
+    } catch (err){
+        throw new Error(`something wrong with User Cart functionality for more info ${err.message}`)
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
@@ -354,5 +397,6 @@ module.exports = {
     resetpassword,
     loginAdmin,
     wishlist,
-    saveAddress
+    saveAddress,
+    userCart
 } 

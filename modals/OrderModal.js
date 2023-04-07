@@ -2,14 +2,15 @@ const mongoose = require('mongoose'); // Erase if already required
 
 // Declare the Schema of the Mongo model
 var OrderSchema = new mongoose.Schema({
-    products:{
+    products:[{
         product : {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Product"
         },
         count : Number,
         color : String,
-    },
+        price : Number,
+    }],
     paymentIntent : {},
     orderStatus: {
         type : String,
