@@ -381,6 +381,21 @@ const userCart = asynchandler(async (req, res) => {
     }
 })
 
+// Get usercart functionality 
+
+const getUserCart = asynchandler(async(req, res) => {
+    const {_id} = req.user
+    try {
+        // Fetch the user
+        const user = await User.findById(_id)
+        const cart = await Cart.findOne({orderBy : user._id}).populate("products.product") 
+        console.log(cart);
+        res.json(cart)
+    } catch (err) {
+        throw new Error (`This error is related to getting user cart for more deatils check ${err.message} `)
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
@@ -398,5 +413,6 @@ module.exports = {
     loginAdmin,
     wishlist,
     saveAddress,
-    userCart
+    userCart,
+    getUserCart
 } 
