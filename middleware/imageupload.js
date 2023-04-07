@@ -1,6 +1,7 @@
 const multer = require("multer")  // For handling the multimedia files 
 const sharp = require("sharp")   // For image reprocessing like width and height
 const path = require("path")  // accessing path modules
+const fs = require("fs")
 
 
 // This enables storage functionality and naming files uploaded
@@ -35,7 +36,7 @@ const uploadPhoto = multer({
 
 // Image resizing functionality after upload for products
 
-const productImgResize = async (req, file, cb) => {
+const productImgResize = async (req, res, next) => {
     if(!req.files) return next();
     await Promise.all(
         req.files.map(async (file) => {
@@ -44,15 +45,15 @@ const productImgResize = async (req, file, cb) => {
             .toFormat("jpeg")
             .jpeg({quality : 90})
             .toFile(`public/images/products/${file.filename}`)
-        }
-        )
-        ),
+            fs.unlinkSync(`public/images/products/${file.filename}`)
+        })
+    ),
         next();
 }
 
 // Image resizing functionality after upload for blogs
 
-const blogImgResize = async (req, file, cb) => {
+const blogImgResize = async (req, res, next) => {
     if(!req.files) return next();
     await Promise.all(
         req.files.map(async (file) => {
@@ -60,10 +61,11 @@ const blogImgResize = async (req, file, cb) => {
             .resize(300,300)
             .toFormat("jpeg")
             .jpeg({quality : 90})
-            .toFile(`public/images/blog /${file.filename}`)
+            .toFile(`public/images/blog/${file.filename}`)
+            fs.unlinkSync(`public/images/blog/${file.filename}`)
         })
     ),
-    next();
+        next();
 }
 
 module.exports = {uploadPhoto, productImgResize, blogImgResize}

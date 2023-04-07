@@ -2,6 +2,9 @@ const Product = require("../modals/productModal")
 const asynchandler = require("express-async-handler")
 const slugify = require('slugify')
 const User = require("../modals/userModal")
+const MongoDbValidation = require("../utils/validatemogodbid")
+const cloudImgUpload = require("../utils/cloudinary")
+const fs = require ("fs")
 // Create a new product
 
 const createProduct = asynchandler(async(req, res) => {
@@ -193,9 +196,23 @@ const ratingfunction = asynchandler(async (req, res) => {
 
 const ImageUpload = asynchandler(async (req, res)=> {
         const {id} = req.params
+        MongoDbValidation(id)
     try {
-        console.log(req.files );
+        const uploader = (path) => cloudImgUpload(path, "images");
+        const url = [];
+        const files = req.files;
 
+        for (const file of files) {
+            const {path} = file
+            const newpath = await uploader(path)
+            url.push(newpath)
+            fs.unlinkSync(path)
+        }
+
+        const findProduct = await Product.findByIdAndUpdate(id, {
+            images: url.map((file) => file)
+        }, {new : true})
+        res.json(findProduct)
     } catch (err) {
         throw new Error (`This error is related to image upload functionality and more details ${err.message}`)
     }

@@ -40,8 +40,7 @@ var BlogSchema = new mongoose.Schema({
         }
     ],
     images : {
-        type : String,
-        default : 'https://upload.wikimedia.org/wikipedia/commons/d/d1/Image_not_available.png'
+        type : [],
     },
     Authur : {
         type: "String",

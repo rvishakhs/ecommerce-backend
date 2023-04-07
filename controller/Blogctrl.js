@@ -2,7 +2,8 @@ const Blog = require("../modals/blogModal")
 const User = require("../modals/userModal")
 const asynchandler = require("express-async-handler")
 const MongoDbValidation = require("../utils/validatemogodbid")
-
+const fs = require("fs")
+const cloudImgUpload = require("../utils/cloudinary")
 
 
 // Create a new blog
@@ -142,4 +143,31 @@ const disLikeBlog = asynchandler(async(req,res)=> {
     }
 })
 
-module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog, likeBlog, disLikeBlog}
+// Image upload functionality 
+
+const ImageUpload = asynchandler(async (req, res)=> {
+    const {id} = req.params
+try {
+    const uploader = (path) => cloudImgUpload(path, "images");
+    const url = [];
+    const files = req.files;
+    console.log(files);
+
+    for (const file of files) {
+        const {path} = file
+        const newpath = await uploader(path)
+        url.push(newpath)
+        fs.unlinkSync(path)
+    }
+
+    const findBlog = await Blog.findByIdAndUpdate(id, {
+        images: url.map((file) => file)
+    }, {new : true})
+    res.json(findBlog)
+} catch (err) {
+    throw new Error (`This error is related to image upload functionality of blog and more details are ${err.message}`)
+}
+})
+
+
+module.exports = {createBlog, updateBlog, viewSingleBlog, getAllBlogs, deleteBlog, likeBlog, disLikeBlog, ImageUpload}
