@@ -12,6 +12,7 @@ const jwt = require ("jsonwebtoken");
 const sentemail = require("./emailcontroler");
 const crypto = require("crypto");
 const uniqid = require('uniqid')
+const { log } = require("console")
 
 // Creating a new user 
 
@@ -448,7 +449,6 @@ const createOrder = asynchandler(async (req, res)=> {
         if(!COD) throw new Error ("Payment method is not available")
         const user = await User.findById(_id)
         let usercart = await Cart.findOne({orderBy : user._id}) 
-        console.log(usercart);
         let finalamount = 0
         if (couponapplied && usercart.totalafterDiscount) {
             finalamount = usercart.totalafterDiscount
@@ -471,14 +471,15 @@ const createOrder = asynchandler(async (req, res)=> {
         }).save()
 
         // after placing order we have to update stock count in quantity and sold quantity
-
-        let updatestock = usercart.products.map(async (item) => {
-            await  Product.findByIdAndUpdate(item.product._id , {
-                quantity : (quantity - item.count) ,
-                sold : item.count
-             }, {new : true })
+        let update = usercart.products.map((item) => {
+            return {
+                updateOne : {
+                    filter : { _id : item.product._id},
+                    update : {$inc : { quantity : -item.count, sold: + item.count }}
+                }
+            }
         })
-
+        const updated = await Product.bulkWrite(update, {})
         res.json({message : "success"})
 
     } catch (err) {
