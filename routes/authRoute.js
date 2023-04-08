@@ -1,6 +1,6 @@
 
 const express = require('express')
-const { createuser, loginuserctrl, getallusers, getOneUser, deleteUser, updateUser, blockUser, unBlockUser, handleRefreshToken, logoutFunction, changePassword, forgetpassword, resetpassword, loginAdmin, wishlist, saveAddress, userCart, getUserCart, emptyCart, ApplyingCoupon, createOrder, getOrder, getallorders } = require('../controller/userctrl')
+const { createuser, loginuserctrl, getallusers, getOneUser, deleteUser, updateUser, blockUser, unBlockUser, handleRefreshToken, logoutFunction, changePassword, forgetpassword, resetpassword, loginAdmin, wishlist, saveAddress, userCart, getUserCart, emptyCart, ApplyingCoupon, createOrder, getOrder, getallorders, updateOrderStatus } = require('../controller/userctrl')
 const {authHandler, isAdmin} = require('../middleware/AuthVerification')
 
 
@@ -18,7 +18,8 @@ router.post("/forgetpassword", forgetpassword)  // forget password
 router.put("/resetpassword/:token", resetpassword)  //reset password 
 router.get("/users", getallusers)  // finding all users
 router.get("/user-orders",authHandler, getOrder) // finding all orders of user
-router.get("/allorders",authHandler,isAdmin, getallorders) // finding all orders of user
+router.get("/allorders",authHandler,isAdmin, getallorders) // finding all orders 
+router.put("/update-order/:id",authHandler,isAdmin, updateOrderStatus) // Updating existing orders
 router.get("/usercart",authHandler, getUserCart) // usercart details 
 router.post("/coupon-discount",authHandler, ApplyingCoupon)  // coupon discount
 router.post("/order-create",authHandler, createOrder) // creating order

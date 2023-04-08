@@ -515,6 +515,25 @@ const getallorders = asynchandler(async (req, res) => {
     }
 } )
 
+// Update order Status function
+
+const updateOrderStatus = async (req, res) => {
+    const {id} = req.params
+    const {status} = req.body
+    try {
+        // Find the order
+        const updateOrder = await Order.findByIdAndUpdate(id, { 
+            orderStatus : status, 
+            $set : {
+                'paymentIntent.status' :  status    
+            }
+        }, {new : true})
+        res.json(updateOrder);
+    } catch (err) {
+        throw new Error(`Error related to updating order status, for more info ${err.message}`)
+    }
+}
+
 
 module.exports = {
     createuser, 
@@ -539,5 +558,6 @@ module.exports = {
     ApplyingCoupon,
     createOrder,
     getOrder,
-    getallorders
+    getallorders,
+    updateOrderStatus
 } 
