@@ -396,6 +396,22 @@ const getUserCart = asynchandler(async(req, res) => {
     }
 })
 
+// Empty Cart functionality
+
+const emptyCart = asynchandler(async(req, res)=> {
+    const {_id} = req.user
+    console.log(_id);
+    try {
+        // Find the user
+        const user = await User.findOne({_id})
+        const cart = await Cart.findOneAndRemove({orderBy :user._id})
+        res.json(cart)
+
+    } catch (err){
+        throw new Error (`This error is related to getting empty cart for more details ${err.message}`)
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
@@ -414,5 +430,6 @@ module.exports = {
     wishlist,
     saveAddress,
     userCart,
-    getUserCart
+    getUserCart,
+    emptyCart
 } 
