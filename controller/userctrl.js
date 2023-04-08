@@ -456,7 +456,6 @@ const createOrder = asynchandler(async (req, res)=> {
             finalamount = usercart.cartTotal
         }
 
-        console.log(finalamount);
         let newOrder = await new Order({
             products : usercart.products,
             paymentIntent : {
@@ -473,17 +472,14 @@ const createOrder = asynchandler(async (req, res)=> {
 
         // after placing order we have to update stock count in quantity and sold quantity
 
-        // let updatestock = usercart.map((item) => {
-        //     return {
-        //         upddateOne : {
-        //             filter: {_id : item.product._id},
-        //             update : {$inc : {quantity : -item.count, sold : + item.count}}
-        //         }
-        //     };
-        // })
+        let updatestock = usercart.products.map(async (item) => {
+            await  Product.findByIdAndUpdate(item.product._id , {
+                quantity : (quantity - item.count) ,
+                sold : item.count
+             }, {new : true })
+        })
 
-        // const updated = await Product.bulkWrite(updatestock, {})
-        // res.json(updated)
+        res.json({message : "success"})
 
     } catch (err) {
         throw new Error (`This error is populated because of issue in creating order`)
