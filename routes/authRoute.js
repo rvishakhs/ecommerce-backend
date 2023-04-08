@@ -1,6 +1,6 @@
 
 const express = require('express')
-const { createuser, loginuserctrl, getallusers, getOneUser, deleteUser, updateUser, blockUser, unBlockUser, handleRefreshToken, logoutFunction, changePassword, forgetpassword, resetpassword, loginAdmin, wishlist, saveAddress, userCart, getUserCart, emptyCart, ApplyingCoupon } = require('../controller/userctrl')
+const { createuser, loginuserctrl, getallusers, getOneUser, deleteUser, updateUser, blockUser, unBlockUser, handleRefreshToken, logoutFunction, changePassword, forgetpassword, resetpassword, loginAdmin, wishlist, saveAddress, userCart, getUserCart, emptyCart, ApplyingCoupon, createOrder } = require('../controller/userctrl')
 const {authHandler, isAdmin} = require('../middleware/AuthVerification')
 
 
@@ -18,7 +18,8 @@ router.post("/forgetpassword", forgetpassword)
 router.put("/resetpassword/:token", resetpassword)
 router.get("/users", getallusers)
 router.get("/usercart",authHandler, getUserCart)
-router.put("/coupon-discount",authHandler, ApplyingCoupon)
+router.post("/coupon-discount",authHandler, ApplyingCoupon)
+router.post("/order-create",authHandler, createOrder)
 router.delete("/emptycart",authHandler,  emptyCart)
 router.get("/refresh", handleRefreshToken)
 router.get("/logout", logoutFunction)

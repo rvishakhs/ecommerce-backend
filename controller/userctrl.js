@@ -2,6 +2,7 @@ const User = require("../modals/userModal")
 const Cart = require("../modals/CartModal")
 const Product = require("../modals/productModal")
 const Coupon = require("../modals/couponModal")
+const Order = require("../modals/OrderModal")
 const asynchandler = require("express-async-handler");
 const {generateToken} = require("../config/jwttoken");
 const MongoDbValidation = require("../utils/validatemogodbid");
@@ -10,6 +11,7 @@ const {generateRefreshToken} = require("../config/refreshToken");
 const jwt = require ("jsonwebtoken");
 const sentemail = require("./emailcontroler");
 const crypto = require("crypto");
+const uniqid = require('uniqid')
 
 // Creating a new user 
 
@@ -437,6 +439,57 @@ const ApplyingCoupon = asynchandler(async(req, res)=> {
     }
 })
 
+// Creating new Order functionality
+
+const createOrder = asynchandler(async (req, res)=> {
+    const {_id} = req.user
+    const {COD, couponapplied} = req.body
+    try {
+        if(!COD) throw new Error ("Payment method is not available")
+        const user = await User.findById(_id)
+        let usercart = await Cart.findOne({orderBy : user._id}) 
+        console.log(usercart);
+        let finalamount = 0
+        if (couponapplied && usercart.totalafterDiscount) {
+            finalamount = usercart.totalafterDiscount
+        } else {
+            finalamount = usercart.cartTotal
+        }
+
+        console.log(finalamount);
+        let newOrder = await new Order({
+            products : usercart.products,
+            paymentIntent : {
+                id : uniqid("ORDER",undefined),
+                method : "COD",
+                amount : finalamount,
+                status : "Order Placed | COD",
+                created : Date(),
+                currency : "USD"
+            },
+            orderBy : usercart._id,
+            orderStatus : "Processing"
+        }).save()
+
+        // after placing order we have to update stock count in quantity and sold quantity
+
+        // let updatestock = usercart.map((item) => {
+        //     return {
+        //         upddateOne : {
+        //             filter: {_id : item.product._id},
+        //             update : {$inc : {quantity : -item.count, sold : + item.count}}
+        //         }
+        //     };
+        // })
+
+        // const updated = await Product.bulkWrite(updatestock, {})
+        // res.json(updated)
+
+    } catch (err) {
+        throw new Error (`This error is populated because of issue in creating order`)
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
@@ -457,5 +510,6 @@ module.exports = {
     userCart,
     getUserCart,
     emptyCart,
-    ApplyingCoupon
+    ApplyingCoupon,
+    createOrder
 } 
