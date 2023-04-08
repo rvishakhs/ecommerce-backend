@@ -466,7 +466,7 @@ const createOrder = asynchandler(async (req, res)=> {
                 created : Date(),
                 currency : "USD"
             },
-            orderBy : usercart._id,
+            orderBy : user._id,
             orderStatus : "Processing"
         }).save()
 
@@ -486,6 +486,35 @@ const createOrder = asynchandler(async (req, res)=> {
         throw new Error (`This error is populated because of issue in creating order`)
     }
 })
+
+// Getting the orderlist 
+
+const getOrder = asynchandler(async (req, res) => {
+    const {_id} = req.user
+    try {
+        // GEt the user
+        const user = await User.findOne(_id)
+        const userOrder = await Order.findOne({orderBy : _id}).populate("products.product")
+        console.log(userOrder);
+        res.json(userOrder)
+
+
+    } catch (err) {
+        throw new Error (`This error is populated because of getorder functionality`)
+    }
+})
+
+// Fetching all orders 
+
+const getallorders = asynchandler(async (req, res) => {
+    try {
+        const allOrders = await Order.find() 
+        res.json(allOrders)
+    } catch (err) {
+        throw new Error(err)
+    }
+} )
+
 
 module.exports = {
     createuser, 
@@ -508,5 +537,7 @@ module.exports = {
     getUserCart,
     emptyCart,
     ApplyingCoupon,
-    createOrder
+    createOrder,
+    getOrder,
+    getallorders
 } 

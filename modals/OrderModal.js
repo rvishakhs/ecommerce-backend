@@ -27,7 +27,7 @@ var OrderSchema = new mongoose.Schema({
     },
     orderBy : {
         type : mongoose.Schema.Types.ObjectId,
-        ref: "Order"
+        ref: "User"
     }
 },{
     timestamps : true,
