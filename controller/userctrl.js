@@ -1,6 +1,7 @@
 const User = require("../modals/userModal")
 const Cart = require("../modals/CartModal")
 const Product = require("../modals/productModal")
+const Coupon = require("../modals/couponModal")
 const asynchandler = require("express-async-handler");
 const {generateToken} = require("../config/jwttoken");
 const MongoDbValidation = require("../utils/validatemogodbid");
@@ -412,6 +413,30 @@ const emptyCart = asynchandler(async(req, res)=> {
     }
 })
 
+// Applying Coupon functionality
+
+const ApplyingCoupon = asynchandler(async(req, res)=> {
+    const {_id} = req.user
+    const {coupon} = req.body
+    try {
+        // Find the user
+        const user = await User.findOne({_id})
+        // Check the coupon valid or not
+        const validatingCoupon = await Coupon.findOne({tittle : coupon})
+        if(validatingCoupon == null) {
+            throw new Error(`Coupon related error`)
+        } 
+        
+        let {cartTotal} = await Cart.findOne({orderBy : user._id}).populate("products.product")
+        let totalafterdiscount = (cartTotal - (cartTotal * validatingCoupon.discount) / 100) 
+        await Cart.findOneAndUpdate({orderBy : user._id}, {totalafterDiscount : totalafterdiscount}, {new : true})
+        res.json(totalafterdiscount) 
+
+    } catch (err) {
+        throw new Error (`This error is populated because of issue in applying coupon`)
+    }
+})
+
 module.exports = {
     createuser, 
     loginuserctrl, 
@@ -431,5 +456,6 @@ module.exports = {
     saveAddress,
     userCart,
     getUserCart,
-    emptyCart
+    emptyCart,
+    ApplyingCoupon
 } 
