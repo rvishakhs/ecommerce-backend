@@ -7,6 +7,7 @@ const dotenv = require('dotenv').config() // to enable dotenv we have to call do
 const PORT = process.env.PORT || 4000 // assiging port
 const cookieParser = require('cookie-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
 // Different Routes
 const authRoute = require("./routes/authRoute")
@@ -22,6 +23,7 @@ dbconnection()
 
 
 app.use(morgan("dev"))
+app.use(cors())
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
