@@ -17,6 +17,7 @@ const blogRouter = require("./routes/blogRoute")
 const blogCategory = require("./routes/blogcategoryRoute")
 const brandRoute = require("./routes/brandRoute")
 const couponRoute = require("./routes/couponRoute")
+const colorRoute = require("./routes/colorRoute")
 
 
 dbconnection()
@@ -35,6 +36,7 @@ app.use("/api/blog", blogRouter)
 app.use("/api/blogcategory", blogCategory) 
 app.use("/api/brand", brandRoute) 
 app.use("/api/coupon", couponRoute) 
+app.use("/api/color", colorRoute) 
 
 // For error handling
 
