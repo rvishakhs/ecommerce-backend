@@ -3,7 +3,7 @@ const asynchandler = require("express-async-handler")
 const slugify = require('slugify')
 const User = require("../modals/userModal")
 const MongoDbValidation = require("../utils/validatemogodbid")
-const cloudImgUpload = require("../utils/cloudinary")
+const {cloudImgUpload, cloudImgDelete} = require("../utils/cloudinary")
 const fs = require ("fs")
 // Create a new product
 
@@ -195,8 +195,7 @@ const ratingfunction = asynchandler(async (req, res) => {
 //  Image uploading Functionality 
 
 const ImageUpload = asynchandler(async (req, res)=> {
-        const {id} = req.params
-        MongoDbValidation(id)
+
     try {
         const uploader = (path) => cloudImgUpload(path, "images");
         const url = [];
@@ -209,14 +208,31 @@ const ImageUpload = asynchandler(async (req, res)=> {
             fs.unlinkSync(path)
         }
 
-        const findProduct = await Product.findByIdAndUpdate(id, {
-            images: url.map((file) => file)
-        }, {new : true})
-        res.json(findProduct)
+        const images = url.map((file) => {
+            return file
+        })
+        res.json(images)
+
+    
+    } catch (err) {
+        throw new Error (`This error is related to image upload functionality and more details ${err.message}`)
+    }
+})
+
+// Image delete Functionality
+
+const ImageDelete = asynchandler(async (req, res)=> {
+
+    const {id} = req.params
+    try {
+        const deleted =  cloudImgDelete(id, "images");
+        res.json(deleted)
+        
+    
     } catch (err) {
         throw new Error (`This error is related to image upload functionality and more details ${err.message}`)
     }
 })
 
 
-module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc, ratingfunction, ImageUpload}
+module.exports = {createProduct, getproduct, getAllProducts, updateProduct, deleteProduct, wishlistFunc, ratingfunction, ImageUpload, ImageDelete}
