@@ -10,7 +10,7 @@ const morgan = require('morgan')
 const cors = require('cors')
 
 // Different Routes
-const authRoute = require("./routes/authRoute")
+const authRoute = require("./routes/authroute")
 const productRoute = require("./routes/productRoute")
 const ProductCategoryRouter = require("./routes/productcategoryRoute")
 const blogRouter = require("./routes/blogRoute")

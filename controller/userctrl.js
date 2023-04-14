@@ -40,8 +40,10 @@ const loginuserctrl = asynchandler(async (req, res) => {
 
     if(finduser && await finduser.isPaasswordMatched(password)) {
         const refreshToken = await generateRefreshToken(finduser?._id);
+        const token = await generateToken(finduser?._id)
         const updateUser = await User.findByIdAndUpdate(finduser._id, {
                 refreshToken : refreshToken,
+                token : token,
             },
             {
                 new: true
@@ -58,7 +60,7 @@ const loginuserctrl = asynchandler(async (req, res) => {
             lastname : finduser?.lastname,
             email: finduser?.email,
             mobile : finduser?.mobile,
-            token : generateToken(finduser?._id)
+            token : token
 
         });
         console.log("Login Sucessfull");
@@ -494,7 +496,7 @@ const getOrder = asynchandler(async (req, res) => {
     try {
         // GEt the user
         const user = await User.findOne(_id)
-        const userOrder = await Order.findOne({orderBy : _id}).populate("products.product")
+        const userOrder = await Order.findOne({orderBy : _id}).populate("products.product").exec()
         console.log(userOrder);
         res.json(userOrder)
 
@@ -508,7 +510,10 @@ const getOrder = asynchandler(async (req, res) => {
 
 const getallorders = asynchandler(async (req, res) => {
     try {
-        const allOrders = await Order.find() 
+        const allOrders = await Order.find()
+        .populate("products.product")
+        .populate("orderBy")
+        .exec() 
         res.json(allOrders)
     } catch (err) {
         throw new Error(err)
