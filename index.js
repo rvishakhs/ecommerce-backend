@@ -19,6 +19,7 @@ const brandRoute = require("./routes/brandRoute")
 const couponRoute = require("./routes/couponRoute")
 const colorRoute = require("./routes/colorRoute")
 const enqRoute = require("./routes/enquiryRoute")
+const uploadImage = require("./routes/ImageuploadRoute")
 
 
 dbconnection()
@@ -39,6 +40,7 @@ app.use("/api/brand", brandRoute)
 app.use("/api/coupon", couponRoute) 
 app.use("/api/color", colorRoute) 
 app.use("/api/enquire", enqRoute) 
+app.use("/api/upload", uploadImage) 
 
 // For error handling
 
