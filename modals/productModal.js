@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 // Declare the Schema of the Mongo model
 var productSchema = new mongoose.Schema({
+
     tittle:{
         type:String,
         required:true,
@@ -36,16 +37,12 @@ var productSchema = new mongoose.Schema({
         type: Number,
         default: 0
     },
-    images : [{
+    image : [{
         public_id : String,
         url : String,
     }],
-    color : [
-        {
-            id: Number,
-            color : String
-        }
-    ],
+    color : [],
+    tag : String,
     rating : [{
         star : Number,
         comment : String,

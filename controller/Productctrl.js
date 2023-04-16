@@ -9,10 +9,13 @@ const fs = require ("fs")
 
 const createProduct = asynchandler(async(req, res) => {
     try {
-        const newproduct = await Product.create(req.body)
+        let values = req?.body
+        values["slug"] = await slugify(req.body.tittle)
+        const newproduct = await Product.create(values)
+        
         res.json(newproduct)
     } catch (err) {
-        throw new Error(`This error is related to creating product, and  details are ${err.Message}`)
+        throw new Error(`This error is related to creating product, and  details are ${err}`)
     }   
 })
 
