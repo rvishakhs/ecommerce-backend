@@ -4,7 +4,7 @@ const router = express.Router();
 
 const {authHandler, isAdmin} = require('../middleware/AuthVerification');
 
-router.post("/",authHandler, isAdmin, createProduct)
+router.post("/create",authHandler, isAdmin, createProduct)
 router.put("/rating", authHandler, ratingfunction)
 router.put("/:id",authHandler,isAdmin, updateProduct)
 router.delete("/:id",authHandler,isAdmin, deleteProduct)
