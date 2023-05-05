@@ -11,11 +11,10 @@ const createBlog = asynchandler(async (req, res) => {
     try{
         const newBlog = await Blog.create(req.body)
         res.json({
-            status : 200,
             newBlog
         })
     }catch (err) {
-        throw new Error(`This error is related to creating blog post for more details : ${err.message}`)
+        throw new Error(`This error is related to creating blog post for more details : ${err}`)
     }
 })
 

@@ -48,7 +48,7 @@ const getSingleenquiry = asynchandler(async(req, res)=> {
         res.json(singleenquiry)
 
     } catch (err) {
-        throw new Error (`This error occured while geting a  enquiry, For more info ${err.message}`)
+        throw new Error (`This error occured while geting a  enquiry, For more info ${err}`)
    }
 });
 

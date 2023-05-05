@@ -17,7 +17,17 @@ var enquirySchema = new mongoose.Schema({
     comments : {
         type:String,
         required:true,
-    }
+    },
+    enqStatus: {
+        type : String,
+        default : "Submitted",
+        enum : [
+            "Submitted",
+            "Reviewing",
+            "In Progress",
+            "Resolved",
+        ]
+    },
 },
 {
     timestamps : true,

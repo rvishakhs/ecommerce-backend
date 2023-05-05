@@ -13,6 +13,7 @@ router.post("/admin-login", loginAdmin) // Admin login
 router.put("/changepassword",authHandler, changePassword)  // change password
 router.put("/address",authHandler, saveAddress)  // save address
 router.post("/cart",authHandler, userCart)   // user cart
+router.get("/usercart",authHandler, getUserCart) // usercart details 
 router.get("/wishlist", authHandler, wishlist) // wishlist
 router.post("/forgetpassword", forgetpassword)  // forget password
 router.put("/resetpassword/:token", resetpassword)  //reset password 
@@ -20,7 +21,6 @@ router.get("/users", getallusers)  // finding all users
 router.get("/user-orders",authHandler, getOrder) // finding all orders of user
 router.get("/allorders",authHandler,isAdmin, getallorders) // finding all orders 
 router.put("/update-order/:id",authHandler,isAdmin, updateOrderStatus) // Updating existing orders
-router.get("/usercart",authHandler, getUserCart) // usercart details 
 router.post("/coupon-discount",authHandler, ApplyingCoupon)  // coupon discount
 router.post("/order-create",authHandler, createOrder) // creating order
 router.delete("/emptycart",authHandler,  emptyCart) // deleting or empty cart
