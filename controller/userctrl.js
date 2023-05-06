@@ -395,10 +395,21 @@ const getUserCart = asynchandler(async(req, res) => {
         // Fetch the user
         const user = await User.findById(_id)
         const cart = await Cart.findOne({orderBy : user._id}).populate("products.product") 
-        console.log(cart);
         res.json(cart)
     } catch (err) {
         throw new Error (`This error is related to getting user cart for more deatils check ${err.message} `)
+    }
+})
+
+const getOrderbyUser = asynchandler(async (req, res) => {
+    const {id} = req.params 
+    try {
+        const orderdetails = await Order.findOne({orderBy : id})
+        .populate("products.product")
+        .populate("orderBy")
+        .exec();
+    } catch (err) {
+        throw new Error (`This error is related to getting user cart for more deatils check ${err} `)   
     }
 })
 
@@ -564,5 +575,6 @@ module.exports = {
     createOrder,
     getOrder,
     getallorders,
-    updateOrderStatus
+    updateOrderStatus,
+    getOrderbyUser
 } 
