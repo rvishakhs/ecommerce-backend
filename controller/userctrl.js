@@ -404,10 +404,11 @@ const getUserCart = asynchandler(async(req, res) => {
 const getOrderbyUser = asynchandler(async (req, res) => {
     const {id} = req.params 
     try {
-        const orderdetails = await Order.findOne({orderBy : id})
+        const orderdetails = await Order.findById(id)
         .populate("products.product")
         .populate("orderBy")
         .exec();
+        res.json(orderdetails)
     } catch (err) {
         throw new Error (`This error is related to getting user cart for more deatils check ${err} `)   
     }
